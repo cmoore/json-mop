@@ -71,3 +71,17 @@
          (child-rt (obj-rt child)))
     (is (string= (foo child) (foo child-rt)))
     (is (string= (bar child) (bar child-rt)))))
+
+(test reload-encode ()
+  (load (asdf:system-relative-pathname :json-mop-tests "tests.lisp"))
+  (let ((child (make-instance 'child))
+        (parent-only (make-instance 'parent)))
+    (is (string= (with-output-to-string (s) (encode child s))
+                 (with-output-to-string (s) (encode parent-only s))))))
+
+(test reload-decode ()
+  (load (asdf:system-relative-pathname :json-mop-tests "tests.lisp"))
+  (let* ((child (make-instance 'child :foo "hello" :bar "quux"))
+         (child-rt (obj-rt child)))
+    (is (string= (foo child) (foo child-rt)))
+    (is (string= (bar child) (bar child-rt)))))
